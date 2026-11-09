@@ -171,8 +171,8 @@
         if (frame > centerStart) {
           const progress = Math.min(1, (frame - centerStart) / 60);
           const alpha = 1 - Math.exp(-progress * 8);
-          const pulse = 1 + .025 * Math.sin(frame * .05);
-          const flicker = alpha >= 1 ? .75 + .25 * Math.sin(frame * .04 + centerFlicker) : 1;
+          const pulse = 1 + .025 * Math.sin(frame * .015);
+          const flicker = alpha >= 1 ? .75 + .25 * Math.sin(frame * .012 + centerFlicker) : 1;
           const glowAlpha = alpha * flicker;
           ctx.save();
           ctx.translate(W / 2, H / 2);
