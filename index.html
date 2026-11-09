@@ -54,7 +54,7 @@
       const startButton = document.getElementById('startButton');
       const replayButton = document.getElementById('replayButton');
       let particles = [];
-      let fillStart = 0;
+      let fillStart = 0, centerStart = 0;
       let sceneScale = 1, offsetX = 0, offsetY = 0, pixelRatio = 1;
       let started = false, raf = 0;
 
@@ -124,6 +124,7 @@
         for (const p of outline) p.delay = Math.floor(p.order * 1.6);
         for (const p of fill) p.delay = fillStart + p.order;
         particles = outline.concat(fill);
+        centerStart = Math.max(...fill.map(p => p.delay)) + 18;
       }
       function resize() {
         pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -159,7 +160,6 @@
           ctx.drawImage(text, p.x - text.width / 2, p.y - text.height / 2);
         }
         ctx.globalAlpha = 1;
-        const centerStart = fillStart + 200;
         if (frame > centerStart) {
           const progress = Math.min(1, (frame - centerStart) / 60);
           const alpha = 1 - Math.exp(-progress * 8);
@@ -167,17 +167,30 @@
           ctx.save();
           ctx.translate(W / 2, H / 2);
           ctx.scale(pulse, pulse);
-          ctx.font = '700 54px Georgia, serif';
+          ctx.font = '700 62px Georgia, serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.globalAlpha = alpha / 5;
-          ctx.shadowColor = '#fffaf5';
-          ctx.shadowBlur = 18;
-          ctx.fillStyle = '#fffaf5';
-          ctx.fillText(' Love You ', 0, 0);
+          const phrase = ' Love You ';
+          const labelWidth = ctx.measureText(phrase).width + 36;
+          const labelHeight = 88;
+          ctx.globalAlpha = alpha * .9;
+          ctx.shadowColor = 'rgba(0, 0, 0, .7)';
+          ctx.shadowBlur = 24;
+          ctx.fillStyle = 'rgba(3, 6, 15, .88)';
+          ctx.beginPath();
+          ctx.roundRect(-labelWidth / 2, -labelHeight / 2, labelWidth, labelHeight, 24);
+          ctx.fill();
           ctx.shadowBlur = 0;
+          ctx.lineJoin = 'round';
+          ctx.lineWidth = 7;
+          ctx.strokeStyle = 'rgba(3, 6, 15, .96)';
           ctx.globalAlpha = alpha;
-          ctx.fillText(' Love You ', 0, 0);
+          ctx.strokeText(phrase, 0, 0);
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = '#fffaf5';
+          ctx.shadowColor = 'rgba(255, 250, 245, .3)';
+          ctx.shadowBlur = 12;
+          ctx.fillText(phrase, 0, 0);
           ctx.restore();
         }
       }
